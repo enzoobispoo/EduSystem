@@ -1,0 +1,152 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Professor {
+  id        String   @id @default(cuid())
+  nome      String
+  email     String   @unique
+  telefone  String?
+  cpf       String   @unique
+  valorHora Decimal? @db.Decimal(10, 2)
+  valorAluno Decimal? @db.Decimal(10, 2)
+  tipoPagamento String @default("Por Aluno") // "Por Aluno" ou "Por Hora"
+  status    String   @default("ativo")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  eventos     Evento[]
+
+  // Relacionamentos
+  cursos    ProfessorCurso[]
+  pagamentos Pagamento[]
+
+  @@map("professores")
+}
+
+model Aluno {
+  id        String   @id @default(cuid())
+  nome      String
+  email     String   @unique
+  telefone  String?
+  cpf       String   @unique
+  status    String   @default("ativo")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacionamentos
+  matriculas Matricula[]
+
+  @@map("alunos")
+}
+
+model Curso {
+  id          String   @id @default(cuid())
+  nome        String
+  descricao   String?
+  valor       Decimal  @db.Decimal(10, 2)
+  tipo        String   @default("Games") 
+  dataInicio  DateTime
+  dataFim     DateTime
+  status      String   @default("ativo")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  eventos     Evento[]
+
+  // Relacionamentos
+  professores ProfessorCurso[]
+  matriculas  Matricula[]
+
+  @@map("cursos")
+}
+
+model ProfessorCurso {
+  id          String @id @default(cuid())
+  professorId String
+  cursoId     String
+  
+  professor   Professor @relation(fields: [professorId], references: [id], onDelete: Cascade)
+  curso       Curso     @relation(fields: [cursoId], references: [id], onDelete: Cascade)
+
+  @@unique([professorId, cursoId])
+  @@map("professor_cursos")
+}
+
+model Matricula {
+  id           String   @id @default(cuid())
+  alunoId      String
+  cursoId      String
+  dataMatricula DateTime @default(now())
+  status       String   @default("Pendente") // "Pendente", "Pago", "Cancelado"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  aluno Aluno @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+  curso Curso @relation(fields: [cursoId], references: [id], onDelete: Cascade)
+
+  @@unique([alunoId, cursoId])
+  @@map("matriculas")
+}
+
+model Pagamento {
+  id               String   @id @default(cuid())
+  professorId      String
+  valor            Decimal  @db.Decimal(10, 2)
+  mes              Int
+  ano              Int
+  horasTrabalhadas Int?
+  alunosAtendidos  Int?
+  status           String   @default("pendente")  // ← Confirme que está "pendente"
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  professor Professor @relation(fields: [professorId], references: [id], onDelete: Cascade)
+
+  @@unique([professorId, mes, ano])
+  @@map("pagamentos")
+}
+
+model Notificacao {
+  id        String   @id @default(cuid())
+  titulo    String
+  mensagem  String
+  tipo      String
+  lida      Boolean  @default(false)
+  icone     String?
+  cor       String   @default("blue")
+  url       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("notificacoes")
+}
+
+model Evento {
+  id          String   @id @default(cuid())
+  titulo      String
+  descricao   String?
+  data        DateTime
+  horaInicio  String
+  horaFim     String
+  sala        String?
+  tipo        String
+  cor         String   @default("bg-blue-500")
+  
+  professorId String?
+  cursoId     String?
+  
+  professor   Professor? @relation(fields: [professorId], references: [id], onDelete: SetNull)
+  curso       Curso?     @relation(fields: [cursoId], references: [id], onDelete: SetNull)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("eventos")
+}
