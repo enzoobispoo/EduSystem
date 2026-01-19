@@ -22,9 +22,9 @@ export default function ProfessoresPage() {
   const [showModal, setShowModal] = useState(false);
   const [professores, setProfessores] = useState<Professor[]>([]);
   const [loading, setLoading] = useState(true);
-  const [deleteModal, setDeleteModal] = useState({ isOpen: false, professor: null as any });
+  const [deleteModal, setDeleteModal] = useState({ isOpen: false, professor: null as Professor | null });
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const [editModal, setEditModal] = useState({ isOpen: false, professor: null as any });
+  const [editModal, setEditModal] = useState({ isOpen: false, professor: null as Professor | null });
   const [editLoading, setEditLoading] = useState(false);
 
   // Carregar professores
