@@ -35,7 +35,7 @@ export default function ProfessoresPage() {
   const fetchProfessores = async () => {
     try {
       const response = await fetch('/api/professores');
-      const data = await response.json();
+      const data: Professor[] = await response.json();
       setProfessores(data);
     } catch (error) {
       console.error('Erro ao carregar professores:', error);
@@ -50,7 +50,7 @@ export default function ProfessoresPage() {
     
     setEditLoading(true);
     try {
-      const response = await fetch(`/api/professores/${editModal.professor.id}`, {
+      const response = await fetch(`/api/professores/${editModal.professor?.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -58,7 +58,7 @@ export default function ProfessoresPage() {
           email: formData.get('email'),
           telefone: formData.get('telefone'),
           cpf: formData.get('cpf'),
-          valorAluno: formData.get('valorAluno'),
+          valorAluno: Number(formData.get('valorAluno')),      //
           tipoPagamento: 'Por Aluno'
         })
       });
@@ -114,7 +114,7 @@ export default function ProfessoresPage() {
           email: formData.get('email'),
           telefone: formData.get('telefone'),
           cpf: formData.get('cpf'),
-          valorAluno: formData.get('valorAluno'),
+          valorAluno: Number(formData.get('valorAluno')),    //
           tipoPagamento: 'Por Aluno'
         })
       });
