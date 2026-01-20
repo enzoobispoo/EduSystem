@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Edit, Trash2, User, X, Clock, Check } from "lucide-react";
+import { Plus, Edit, Trash2, User, X } from "lucide-react";
 import { maskCPF, maskPhone, applyMask } from "@/lib/masks";
 import DeleteModal from "@/components/DeleteModal";
 
@@ -24,14 +24,30 @@ interface Aluno {
     }[];
   }
 
+  interface Curso {
+    id: string;
+    nome: string;
+    valor: string;
+    tipo: string;
+    dataInicio: string;
+    dataFim: string;
+  }
+
 export default function AlunosPage() {
   const [showModal, setShowModal] = useState(false);
   const [alunos, setAlunos] = useState<Aluno[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCategorias, setShowCategorias] = useState(false);
-  const [cursos, setCursos] = useState<any[]>([]);
-  const [deleteModal, setDeleteModal] = useState({ isOpen: false, aluno: null as any });
-  const [editModal, setEditModal] = useState({ isOpen: false, aluno: null as any });
+  const [cursos, setCursos] = useState<Curso[]>([]);
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; aluno: Aluno | null }>({
+    isOpen: false,
+    aluno: null,
+  });
+  
+  const [editModal, setEditModal] = useState<{ isOpen: boolean; aluno: Aluno | null }>({
+    isOpen: false,
+    aluno: null,
+  });
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
   const [selectedCursos, setSelectedCursos] = useState<string[]>([]);
@@ -51,10 +67,6 @@ export default function AlunosPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleRoboticaChange = (checked: boolean) => {
-    setShowCategorias(checked);
   };
 
   const handleCursoChange = (cursoId: string, checked: boolean) => {
@@ -113,7 +125,7 @@ export default function AlunosPage() {
   
   const handleEdit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+    if (!editModal.aluno) return;
     
     setEditLoading(true);
     try {
