@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Search, User, Calendar, MessageSquare, X, Check, Trash2, UserPlus, BookOpen, DollarSign, AlertCircle } from "lucide-react";
+import { Bell, Search, User, Calendar, MessageSquare, Check, Trash2, UserPlus, BookOpen, DollarSign, AlertCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 
 interface TopBarProps {

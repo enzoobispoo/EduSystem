@@ -18,13 +18,24 @@ interface Professor {
   status: string;
 }
 
+interface ProfessorModalState {
+  isOpen: boolean;
+  professor: Professor | null;
+}
+
 export default function ProfessoresPage() {
   const [showModal, setShowModal] = useState(false);
   const [professores, setProfessores] = useState<Professor[]>([]);
   const [loading, setLoading] = useState(true);
-  const [deleteModal, setDeleteModal] = useState({ isOpen: false, professor: null as Professor | null });
+  const [deleteModal, setDeleteModal] = useState<ProfessorModalState>({
+    isOpen: false,
+    professor: null,
+  });
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const [editModal, setEditModal] = useState({ isOpen: false, professor: null as Professor | null });
+  const [editModal, setEditModal] = useState<ProfessorModalState>({
+    isOpen: false,
+    professor: null,
+  });
   const [editLoading, setEditLoading] = useState(false);
 
   // Carregar professores
@@ -160,8 +171,18 @@ export default function ProfessoresPage() {
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
                 <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">PROFESSOR</th>
-                <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">VALOR/ALUNO</th>
-                <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">HORAS MÊS</th>
+                <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">
+  <div className="flex items-center gap-2">
+    <DollarSign className="w-4 h-4" />
+    VALOR/ALUNO
+  </div>
+</th>
+<th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">
+  <div className="flex items-center gap-2">
+    <Clock className="w-4 h-4" />
+    HORAS MÊS
+  </div>
+</th>
                 <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">COMISSÃO</th>
                 <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">STATUS PAGAMENTO</th>
                 <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">AÇÕES</th>

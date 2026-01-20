@@ -4,13 +4,26 @@ import { Users, BookOpen, DollarSign, TrendingUp, Calendar, Share2, UserPlus, Cl
 import { useState, useEffect } from "react";
 import TopBar from "@/components/TopBar";
 
+interface ProfessorRecente {
+  id: string;
+  nome: string;
+  createdAt: string;
+}
+
+interface AlunoRecente {
+  id: string;
+  nome: string;
+  createdAt: string;
+  matriculas?: { id: string }[];
+}
+
 interface DashboardData {
   totalAlunos: number;
   totalCursos: number;
   receita: number;
   lucro: number;
-  professoresRecentes: any[];
-  alunosRecentes: any[];
+  professoresRecentes: ProfessorRecente[];
+  alunosRecentes: AlunoRecente[];
 }
 
 export default function Dashboard() {
@@ -35,7 +48,7 @@ export default function Dashboard() {
   const fetchDashboardData = async () => {
     try {
       const response = await fetch('/api/dashboard');
-      const data = await response.json();
+      const data: DashboardData = await response.json();
       setDashboardData(data);
     } catch (error) {
       console.error('Erro ao carregar dashboard:', error);

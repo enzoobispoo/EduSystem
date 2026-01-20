@@ -9,10 +9,11 @@ interface Curso {
   nome: string;
   descricao?: string;
   valor: number | string;
+  tipo: string;
   dataInicio: string;
   dataFim: string;
   status: string;
-  matriculas: Array<{ id: string }>;
+  matriculas: { id: string }[];
 }
 
 interface CursoModalState {
@@ -75,7 +76,7 @@ const [editModal, setEditModal] = useState<CursoModalState>({ isOpen: false, cur
     
     setEditLoading(true);
     try {
-      const response = await fetch(`/api/cursos/${editModal.curso.id}`, {
+      const response = await fetch(`/api/cursos/${editModal.curso?.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

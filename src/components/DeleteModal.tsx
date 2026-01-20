@@ -48,9 +48,9 @@ export default function DeleteModal({
         <div className="px-6 py-4">
           <p className="text-gray-600 mb-2">{message}</p>
           <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-            <p className="text-sm font-medium text-red-800">
-              "{itemName}"
-            </p>
+          <p className="text-sm font-medium text-red-800">
+  &quot;{itemName}&quot;
+</p>
             <p className="text-xs text-red-600 mt-1">
               Esta ação não pode ser desfeita.
             </p>

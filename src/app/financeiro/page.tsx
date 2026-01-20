@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { 
   DollarSign, 
   TrendingUp, 
@@ -18,8 +18,6 @@ import {
   Plus,
   X,
   Loader2,
-  ArrowUpRight,
-  ArrowDownRight,
   Target,
   Sparkles,
   Search,
@@ -253,11 +251,7 @@ export default function FinanceiroPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    fetchFinanceiroData();
-  }, [filtroMes, filtroAno]);
-
-  const fetchFinanceiroData = async () => {
+  const fetchFinanceiroData = useCallback(async () => {
     try {
       setLoading(true);
       const [statsRes, pagamentosRes, matriculasRes] = await Promise.all([
@@ -265,17 +259,17 @@ export default function FinanceiroPage() {
         fetch(`/api/financeiro/pagamentos?mes=${filtroMes}&ano=${filtroAno}`),
         fetch(`/api/financeiro/receitas?mes=${filtroMes}&ano=${filtroAno}`)
       ]);
-
+  
       if (statsRes.ok) {
         const statsData = await statsRes.json();
         setStats(statsData);
       }
-
+  
       if (pagamentosRes.ok) {
         const pagamentosData = await pagamentosRes.json();
         setPagamentos(pagamentosData);
       }
-
+  
       if (matriculasRes.ok) {
         const matriculasData = await matriculasRes.json();
         setMatriculasFinanceiras(matriculasData);
@@ -285,7 +279,11 @@ export default function FinanceiroPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filtroMes, filtroAno]);
+
+  useEffect(() => {
+    fetchFinanceiroData();
+  }, [fetchFinanceiroData]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
