@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, BookOpen, X, Eye } from "lucide-react";
 import DeleteModal from "@/components/DeleteModal";
-import TopBar from "@/components/TopBar";
 
 interface Curso {
   id: string;
@@ -13,27 +12,23 @@ interface Curso {
   dataInicio: string;
   dataFim: string;
   status: string;
-  matriculas: any[];
+  matriculas: Array<{ id: string }>;
+}
+
+interface CursoModalState {
+  isOpen: boolean;
+  curso: Curso | null;
 }
 
 export default function CursosPage() {
   const [showModal, setShowModal] = useState(false);
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [loading, setLoading] = useState(true);
-  const [deleteModal, setDeleteModal] = useState({ isOpen: false, curso: null as any });
-  const [editModal, setEditModal] = useState({ isOpen: false, curso: null as any });
+  const [deleteModal, setDeleteModal] = useState<CursoModalState>({ isOpen: false, curso: null });
+const [editModal, setEditModal] = useState<CursoModalState>({ isOpen: false, curso: null });
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
 
-  const topBarActions = (
-    <button 
-      onClick={() => setShowModal(true)}
-      className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
-    >
-      <Plus className="w-4 h-4" />
-      Novo Curso
-    </button>
-  );
 
   useEffect(() => {
     fetchCursos();
