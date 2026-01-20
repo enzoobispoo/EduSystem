@@ -20,7 +20,8 @@ export async function GET() {
     });
     
     return NextResponse.json(cursos);
-  } catch (error) {
+  } catch (error: unknown) {
+    console.error(error);
     return NextResponse.json(
       { error: 'Erro ao buscar cursos' },
       { status: 500 }
@@ -34,18 +35,19 @@ export async function POST(request: NextRequest) {
     const data = await request.json();
     
     const curso = await prisma.curso.create({
-        data: {
-          nome: data.nome,
-          descricao: data.descricao,
-          valor: parseFloat(data.valor),
-          tipo: data.tipo || "Games", // ADICIONE ESTA LINHA
-          dataInicio: new Date(data.dataInicio),
-          dataFim: new Date(data.dataFim)
-        }
-      });
+      data: {
+        nome: data.nome,
+        descricao: data.descricao,
+        valor: parseFloat(data.valor),
+        tipo: data.tipo || "Games",
+        dataInicio: new Date(data.dataInicio),
+        dataFim: new Date(data.dataFim)
+      }
+    });
     
     return NextResponse.json(curso);
-  } catch (error) {
+  } catch (error: unknown) {
+    console.error(error);
     return NextResponse.json(
       { error: 'Erro ao criar curso' },
       { status: 500 }

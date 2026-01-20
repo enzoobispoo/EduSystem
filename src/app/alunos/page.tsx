@@ -24,6 +24,16 @@ interface Aluno {
     }[];
   }
 
+  type EditModalState = {
+    isOpen: boolean;
+    aluno: Aluno | null;
+  };
+  
+  type DeleteModalState = {
+    isOpen: boolean;
+    aluno: Aluno | null;
+  };
+
   interface Curso {
     id: string;
     nome: string;
@@ -125,18 +135,23 @@ export default function AlunosPage() {
   
   const handleEdit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!editModal.aluno) return;
-    
+    const formData = new FormData(e.currentTarget);
+  
+    const nome = formData.get('nome')?.toString() || "";
+    const email = formData.get('email')?.toString() || "";
+    const telefone = formData.get('telefone')?.toString() || "";
+    const cpf = formData.get('cpf')?.toString() || "";
+  
     setEditLoading(true);
     try {
-      const response = await fetch(`/api/alunos/${editModal.aluno.id}`, {
+      const response = await fetch(`/api/alunos/${editModal.aluno?.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          nome: formData.get('nome'),
-          email: formData.get('email'),
-          telefone: formData.get('telefone'),
-          cpf: formData.get('cpf')
+          nome,
+          email,
+          telefone,
+          cpf
         })
       });
       
@@ -167,6 +182,11 @@ const fetchCursos = async () => {
 const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+
+    const nome = formData.get('nome')?.toString() || "";
+const email = formData.get('email')?.toString() || "";
+const telefone = formData.get('telefone')?.toString() || "";
+const cpf = formData.get('cpf')?.toString() || "";
     
     // Coletar cursos selecionados
     const cursosCheckboxes = e.currentTarget.querySelectorAll('input[name="cursos"]:checked') as NodeListOf<HTMLInputElement>;
@@ -187,13 +207,13 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          nome: formData.get('nome'),
-          email: formData.get('email'),
-          telefone: formData.get('telefone'),
-          cpf: formData.get('cpf'),
+          nome,
+          email,
+          telefone,
+          cpf,
           cursos: cursosSelecionados,
           categorias: categoriasSelecionadas,
-          statusPagamento: formData.get('statusPagamento') || 'Pendente'
+          statusPagamento: formData.get('statusPagamento')?.toString() || "Pendente"
         })
       });
       

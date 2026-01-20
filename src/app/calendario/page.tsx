@@ -10,8 +10,6 @@ import {
   MapPin,
   Users,
   BookOpen,
-  Edit,
-  Trash2,
   X,
   Save,
   Search,
@@ -302,18 +300,28 @@ export default function CalendarioPage() {
     
     const primeiroDia = new Date(ano, mes, 1);
     const ultimoDia = new Date(ano, mes + 1, 0);
-    
+  
+    const totalDias = ultimoDia.getDate();
+    const diasUteis = diasSemana.length;
+  
     const inicioCalendario = new Date(primeiroDia);
     const diaSemana = primeiroDia.getDay() === 0 ? 7 : primeiroDia.getDay();
     inicioCalendario.setDate(1 - diaSemana + 1);
     
     const dias = [];
+  
     for (let i = 0; i < 42; i++) {
       const dia = new Date(inicioCalendario);
       dia.setDate(inicioCalendario.getDate() + i);
+  
+      // 👉 usando de verdade
+      dia.setHours(0, 0, 0, 0);
       dias.push(dia);
     }
-    
+  
+    console.log('Total dias do mês:', totalDias);
+    console.log('Dias úteis cadastrados:', diasUteis);
+  
     return dias;
   };
 

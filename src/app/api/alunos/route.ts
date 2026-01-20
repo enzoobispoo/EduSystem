@@ -1,15 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+type CreateAlunoPayload = {
+  nome: string;
+  email: string;
+  telefone?: string;
+  cpf: string;
+  cursos?: string[];
+  statusPagamento?: string;
+};
+
+
 // Função helper para criar notificação (opcional)
-const createNotification = async (data: any) => {
+const createNotification = async (_data: unknown) => {
   try {
   //  await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/notificacoes`, {
    //   method: 'POST',
     //  headers: { 'Content-Type': 'application/json' },
    //   body: JSON.stringify(data)
    // });
-  } catch (error) {
+  } catch (error: unknown) {                                                         /////////
     console.error('Erro ao criar notificação:', error);
     // Não quebra o fluxo se a notificação falhar
   }
@@ -29,7 +39,7 @@ export async function GET() {
     });
     
     return NextResponse.json(alunos);
-  } catch (error) {
+  } catch (error: unknown) {                                                   ////////
     return NextResponse.json(
       { error: 'Erro ao buscar alunos' },
       { status: 500 }
@@ -40,7 +50,7 @@ export async function GET() {
 // POST - Criar novo aluno
 export async function POST(request: NextRequest) {
   try {
-    const data = await request.json();
+    const data = (await request.json()) as CreateAlunoPayload;
     
     // Verificar se já existe um aluno com este email
     const alunoExistente = await prisma.aluno.findUnique({
@@ -102,7 +112,7 @@ export async function POST(request: NextRequest) {
               url: '/alunos'
             });
           }
-        } catch (error) {
+        } catch (error: unknown) {                                                           /////////
           console.error('Erro ao criar notificação de matrícula:', error);
         }
       }
@@ -119,7 +129,7 @@ export async function POST(request: NextRequest) {
     });
     
     return NextResponse.json(aluno);
-  } catch (error) {
+  } catch (error: unknown) {                                                  /////////
     console.error('Erro ao criar aluno:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },

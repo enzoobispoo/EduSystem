@@ -25,7 +25,8 @@ export async function GET() {
     });
     
     return NextResponse.json(professores);
-  } catch (error) {
+  } catch (error: unknown) {
+    console.error(error);                                              ////////
     return NextResponse.json(
       { error: 'Erro ao buscar professores' },
       { status: 500 }
@@ -97,7 +98,8 @@ export async function POST(request: NextRequest) {
     }
     
     return NextResponse.json(professor);
-  } catch (error) {
+  } catch (error: unknown) {
+    console.error(error);                                                   ///////
     return NextResponse.json(
       { error: 'Erro ao criar professor' },
       { status: 500 }
