@@ -50,7 +50,8 @@ export default function Dashboard() {
       const response = await fetch('/api/dashboard');
   
       if (!response.ok) {
-        throw new Error('Erro na API');
+        console.error('Erro na API:', response.status);
+        return null;
       }
   
       const data = await response.json();

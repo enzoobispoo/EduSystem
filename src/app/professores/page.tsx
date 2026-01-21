@@ -44,12 +44,26 @@ export default function ProfessoresPage() {
   }, []);
 
   const fetchProfessores = async () => {
+    setLoading(true);
+  
     try {
       const response = await fetch('/api/professores');
-      const data: Professor[] = await response.json();
-      setProfessores(data);
+  
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+  
+      const data = await response.json();
+  
+      if (Array.isArray(data)) {
+        setProfessores(data);
+      } else {
+        console.error('Resposta inválida:', data);
+        setProfessores([]);
+      }
     } catch (error) {
-      console.error('Erro ao carregar professores:', error);
+      console.error('Erro ao buscar professores:', error);
+      setProfessores([]);
     } finally {
       setLoading(false);
     }
@@ -196,7 +210,7 @@ export default function ProfessoresPage() {
                   </td>
                 </tr>
               ) : (
-                professores.map((professor) => (
+                Array.isArray(professores) && professores.length > 0 && professores.map((professor) => (
                   <tr key={professor.id} className="hover:bg-gray-50">
                     <td className="py-4 px-6 whitespace-nowrap">
                       <div>
