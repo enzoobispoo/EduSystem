@@ -38,10 +38,24 @@ const [editModal, setEditModal] = useState<CursoModalState>({ isOpen: false, cur
   const fetchCursos = async () => {
     try {
       const response = await fetch('/api/cursos');
+  
+      if (!response.ok) {
+        console.error('Erro API cursos:', response.status);
+        setCursos([]);
+        return;
+      }
+  
       const data = await response.json();
-      setCursos(data);
+  
+      if (Array.isArray(data)) {
+        setCursos(data);
+      } else {
+        console.error('Resposta inválida cursos:', data);
+        setCursos([]);
+      }
     } catch (error) {
       console.error('Erro ao carregar cursos:', error);
+      setCursos([]);
     } finally {
       setLoading(false);
     }
@@ -174,7 +188,7 @@ const [editModal, setEditModal] = useState<CursoModalState>({ isOpen: false, cur
                   </td>
                 </tr>
               ) : (
-                cursos.map((curso) => (
+                Array.isArray(cursos) && cursos.map((curso) => (
                   <tr key={curso.id} className="hover:bg-gray-50">
                     <td className="py-4 px-6">
                       <div>
@@ -187,12 +201,12 @@ const [editModal, setEditModal] = useState<CursoModalState>({ isOpen: false, cur
                     </td>
                     <td className="py-4 px-6">
                       <div className="text-sm text-gray-900">
-                        {new Date(curso.dataInicio).toLocaleDateString('pt-BR')} - {new Date(curso.dataFim).toLocaleDateString('pt-BR')}
+                      {curso.dataInicio ? new Date(curso.dataInicio).toLocaleDateString('pt-BR') : '-'} - {new Date(curso.dataFim).toLocaleDateString('pt-BR')}
                       </div>
                     </td>
                     <td className="py-4 px-6 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
-  R$ {typeof curso.valor === 'number' ? curso.valor.toFixed(2) : Number(curso.valor).toFixed(2)}
+                    R$ {Number(curso.valor || 0).toFixed(2)}
 </div>
                     </td>
                     <td className="py-4 px-6 whitespace-nowrap">
