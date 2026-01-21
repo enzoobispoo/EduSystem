@@ -48,10 +48,32 @@ export default function Dashboard() {
   const fetchDashboardData = async () => {
     try {
       const response = await fetch('/api/dashboard');
-      const data: DashboardData = await response.json();
-      setDashboardData(data);
+  
+      if (!response.ok) {
+        throw new Error('Erro na API');
+      }
+  
+      const data = await response.json();
+  
+      setDashboardData({
+        totalAlunos: data?.totalAlunos ?? 0,
+        totalCursos: data?.totalCursos ?? 0,
+        receita: data?.receita ?? 0,
+        lucro: data?.lucro ?? 0,
+        professoresRecentes: data?.professoresRecentes ?? [],
+        alunosRecentes: data?.alunosRecentes ?? [],
+      });
     } catch (error) {
       console.error('Erro ao carregar dashboard:', error);
+  
+      setDashboardData({
+        totalAlunos: 0,
+        totalCursos: 0,
+        receita: 0,
+        lucro: 0,
+        professoresRecentes: [],
+        alunosRecentes: [],
+      });
     } finally {
       setLoading(false);
     }
@@ -60,14 +82,14 @@ export default function Dashboard() {
   const statsCards = [
     {
       title: "Alunos",
-      value: dashboardData.totalAlunos.toString(),
+      value: (dashboardData?.totalAlunos ?? 0).toString(),
       change: `+${dashboardData.totalAlunos}`,
       icon: Users,
       bgColor: "from-blue-500 to-blue-600"
     },
     {
       title: "Cursos", 
-      value: dashboardData.totalCursos.toString(),
+      value: (dashboardData?.totalCursos ?? 0).toString(),
       change: `+${dashboardData.totalCursos}`,
       icon: BookOpen,
       bgColor: "from-emerald-500 to-emerald-600"

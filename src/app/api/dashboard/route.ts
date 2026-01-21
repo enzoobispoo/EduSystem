@@ -47,8 +47,9 @@ export async function GET() {
     return NextResponse.json(estatisticas);
   } catch (error) {
     console.error('Erro ao buscar estatísticas:', error);
+  
     return NextResponse.json(
-      { error: 'Erro ao buscar estatísticas' },
+      { error: String(error) },
       { status: 500 }
     );
   }
