@@ -70,10 +70,24 @@ export default function AlunosPage() {
   const fetchAlunos = async () => {
     try {
       const response = await fetch('/api/alunos');
+  
+      if (!response.ok) {
+        console.error('Erro API alunos:', response.status);
+        setAlunos([]);
+        return;
+      }
+  
       const data = await response.json();
-      setAlunos(data);
+  
+      if (Array.isArray(data)) {
+        setAlunos(data);
+      } else {
+        console.error('Resposta inválida alunos:', data);
+        setAlunos([]);
+      }
     } catch (error) {
       console.error('Erro ao carregar alunos:', error);
+      setAlunos([]);
     } finally {
       setLoading(false);
     }
@@ -279,7 +293,7 @@ const cpf = formData.get('cpf')?.toString() || "";
                   </td>
                 </tr>
               ) : (
-                alunos.map((aluno) => (
+                Array.isArray(alunos) && alunos.map((aluno) => (
                   <tr key={aluno.id} className="hover:bg-gray-50">
                     <td className="py-4 px-6 whitespace-nowrap">
                       <div>
@@ -302,7 +316,7 @@ const cpf = formData.get('cpf')?.toString() || "";
       <span className="text-gray-500">Nenhum curso</span>
     ) : (
       <div className="space-y-1">
-        {aluno.matriculas.map((matricula) => (
+        {aluno.matriculas?.map((matricula) => (
           <div key={matricula.id} className="flex items-center gap-2">
             <span className="font-medium">{matricula.curso.nome}</span>
             <span className={`px-1.5 py-0.5 text-xs rounded-full ${
@@ -485,7 +499,7 @@ const cpf = formData.get('cpf')?.toString() || "";
               <div className="font-medium text-gray-900 text-sm">{curso.nome}</div>
               <div className="flex items-center gap-2 mt-1">
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
-                  R$ {parseFloat(curso.valor).toFixed(2)}
+                  R$ {parseFloat(curso.valor || "0").toFixed(2)}
                 </span>
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
                   {curso.tipo}
